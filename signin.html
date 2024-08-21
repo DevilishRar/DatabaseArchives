@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BreachForums - Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/gitrows@latest/dist/gitrows.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .signin-container {
+            background-color: rgba(30, 30, 30, 0.4);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(50, 50, 50, 0.99);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .signin-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .signin-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            background-color: rgba(50, 50, 50, 0.4);
+            border-radius: 10px;
+            border: none;
+            color: #E0E0E0;
+        }
+
+        .signin-button {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #BB86FC;
+            color: #121212;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .signin-button:hover {
+            background-color: #9A67EA;
+        }
+
+        .signin-footer {
+            margin-top: 20px;
+            color: #B0B0B0;
+            font-size: 0.875rem;
+        }
+
+        .signin-footer a {
+            color: #BB86FC;
+            text-decoration: none;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .glowing-sphere {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(250px);
+            background-color: #BB86FC;
+        }
+
+        .sphere-left {
+            bottom: 30%;
+            left: -100px;
+        }
+
+        .sphere-right {
+            bottom: 30%;
+            right: -100px;
+            background-color: #3700B3;
+        }
+
+        .sphere-top {
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sphere-bottom {
+            bottom: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FF0266;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkling 2s infinite alternate;
+            opacity: 0.9;
+            filter: blur(1px);
+        }
+
+        .star-glow {
+            filter: blur(6px);
+            animation: starGlow 2s infinite alternate;
+        }
+
+        @keyframes twinkling {
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes starGlow {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-overlay"></div>
+    <!-- Glowing Spheres -->
+    <div class="glowing-sphere sphere-top"></div>
+    <div class="glowing-sphere sphere-left"></div>
+    <div class="glowing-sphere sphere-right"></div>
+    <div class="glowing-sphere sphere-bottom"></div>
+
+    <!-- Stars -->
+    <div class="stars" id="stars"></div>
+
+    <div class="signin-container">
+        <h1 class="signin-title">Welcome</h1>
+        <form id="signin-form">
+            <input type="text" id="username" class="signin-input" placeholder="Username" required>
+            <input type="password" id="password" class="signin-input" placeholder="Password" required>
+            <button type="submit" class="signin-button" id="sign-in-index">Sign In to Index</button>
+            <button type="submit" class="signin-button mt-4" id="sign-in-createpost">Sign In to Create Post</button>
+        </form>
+        <div class="signin-footer">
+            <p>Don't have an account? <a href="#">Contact Admin</a></p>
+        </div>
+    </div>
+
+    <script src="signin.js"></script>
+</body>
+
+</html>

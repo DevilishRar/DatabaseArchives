@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BreachForums</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@fluentui/svg-icons">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 4rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            letter-spacing: 0.1rem;
+            color: #B0B0B0;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .glowing-sphere {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(250px);
+            background-color: #BB86FC;
+        }
+
+        .sphere-left {
+            bottom: 30%;
+            left: -100px;
+        }
+
+        .sphere-right {
+            bottom: 30%;
+            right: -100px;
+            background-color: #3700B3;
+        }
+
+        .sphere-top {
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sphere-bottom {
+            bottom: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FF0266;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkling 2s infinite alternate;
+            opacity: 0.9;
+            filter: blur(1px);
+        }
+
+        .star-glow {
+            filter: blur(6px);
+            animation: starGlow 2s infinite alternate;
+        }
+
+        @keyframes twinkling {
+            0% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes starGlow {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .navbar-container {
+            width: calc(100% - 40px);
+            max-width: 1200px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.99);
+            background-color: rgba(30, 30, 30, 0.4);
+            margin: 0 auto;
+            transition: left 0.3s ease;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            text-align: center;
+            transition: left 0.3s ease;
+        }
+
+        .forum-button {
+            margin-top: 2rem;
+            padding: 0.75rem 2rem;
+            background-color: #BB86FC;
+            color: #121212;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .forum-section-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(30, 30, 30, 0.4);
+            border: 1px solid rgba(50, 50, 50, 0.99);
+            border-radius: 50px;
+            padding: 40px;
+            margin: 0 auto;
+            overflow: hidden;
+            z-index: 5;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(50px);
+            transition: opacity 1s ease, visibility 1s ease, transform 1s ease, left 0.3s ease;
+        }
+
+        .forum-section-container.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .forum-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .forum-card {
+            padding: 20px;
+            width: calc(33.333% - 20px);
+            height: 200px;
+            background-color: rgba(50, 50, 50, 0.4);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .forum-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .forum-card-description {
+            margin-top: 10px;
+            color: #B0B0B0;
+            font-size: 0.875rem;
+            font-weight: 300;
+        }
+
+        .delete-post-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #E53935;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .expand-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #BB86FC;
+            color: #121212;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            background-color: #1E1E1E;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            background-color: #BB86FC;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            font-weight: bold;
+            color: #121212;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 15;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Custom scrollbar styles */
+        .forum-cards-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .forum-cards-container::-webkit-scrollbar-thumb {
+            background-color: rgba(187, 134, 252, 0.6);
+            border-radius: 10px;
+        }
+
+        .forum-cards-container::-webkit-scrollbar-track {
+            background-color: rgba(30, 30, 30, 0.4);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="relative flex flex-col items-center min-h-screen" onload="loadPosts()">
+    <div class="grid-overlay"></div>
+
+    <!-- Glowing Spheres -->
+    <div class="glowing-sphere sphere-top"></div>
+    <div class="glowing-sphere sphere-left"></div>
+    <div class="glowing-sphere sphere-right"></div>
+    <div class="glowing-sphere sphere-bottom"></div>
+
+    <!-- Stars -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-container flex justify-between items-center p-4 mx-auto relative top-8" id="navbar">
+        <div class="flex items-center">
+            <i class="fas fa-database text-white text-2xl"></i>
+            <span class="ml-2 text-xl font-bold text-white">BreachForums</span>
+        </div>
+        <div class="flex space-x-6">
+            <a href="#" class="text-gray-300 hover:text-white">Home</a>
+            <a href="#forums" class="text-gray-300 hover:text-white" onclick="scrollToForums()">Forums</a>
+        </div>
+        <button class="px-4 py-2 bg-[#03DAC6] text-black rounded-full hover:bg-[#018786]" onclick="scrollToForums()">Forums</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content text-center" id="main-content">
+        <h1 class="title">BREACHFORUMS</h1>
+        <p class="subtitle mt-4">Discover the Databases. <br> Breaches at ease</p>
+        <button class="forum-button" onclick="scrollToForums()">Forums</button>
+    </main>
+
+    <!-- Forum Section -->
+    <section id="forums" class="forum-section-container">
+        <div class="forum-cards-container" id="forum-cards-container">
+            <!-- Post Cards will be injected here -->
+        </div>
+        <button id="expand-button" class="expand-button hidden" onclick="expandPosts()">Expand</button>
+    </section>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()"></div>
+    <div id="modal" class="modal hidden">
+        <div class="modal-header" id="modal-header">Post Title</div>
+        <div class="modal-content" id="modal-content">
+            This is the content of the post. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+            Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis
+            sagittis ipsum. Praesent mauris.
+        </div>
+    </div>
+
+    <script src="signin.js"></script>
+    <script>
+        const postsPath = 'posts.json';
+
+        // Load posts and display them
+        function loadPosts() {
+            const postsContainer = document.getElementById('forum-cards-container');
+            const postsData = JSON.parse(localStorage.getItem('posts')) || [];
+            postsContainer.innerHTML = ''; // Clear previous posts
+
+            if (postsData.length === 0) {
+                postsContainer.innerHTML = '<p class="text-center text-gray-400">No posts available.</p>';
+            } else {
+                postsData.forEach((post, index) => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'forum-card';
+
+                    const postTitle = document.createElement('h2');
+                    postTitle.className = 'text-2xl font-bold mb-2';
+                    postTitle.innerText = post.title;
+
+                    const postDescription = document.createElement('p');
+                    postDescription.className = 'forum-card-description';
+                    postDescription.innerText = post.description;
+
+                    postCard.appendChild(postTitle);
+                    postCard.appendChild(postDescription);
+
+                    // Only show delete button to logged-in owners
+                    if (sessionStorage.getItem('user')) {
+                        const deleteButton = document.createElement('button');
+                        deleteButton.className = 'delete-post-button';
+                        deleteButton.innerText = 'Delete';
+                        deleteButton.onclick = (e) => {
+                            e.stopPropagation();
+                            deletePost(index);
+                        };
+                        postCard.appendChild(deleteButton);
+                    }
+
+                    postCard.onclick = () => openModal(post.title, post.description);
+                    postsContainer.appendChild(postCard);
+                });
+            }
+        }
+
+        // Delete a post
+        function deletePost(index) {
+            let postsData = JSON.parse(localStorage.getItem('posts')) || [];
+            postsData.splice(index, 1); // Remove the post by index
+            localStorage.setItem('posts', JSON.stringify(postsData));
+            loadPosts(); // Reload posts after deletion
+        }
+
+        // Open Modal
+        function openModal(postTitle, postDescription) {
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modal-overlay');
+            document.getElementById('modal-header').innerText = postTitle;
+            document.getElementById('modal-content').innerText = postDescription;
+
+            overlay.classList.add('visible');
+            modal.classList.add('visible');
+        }
+
+        // Close Modal
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modal-overlay');
+
+            overlay.classList.remove('visible');
+            modal.classList.remove('visible');
+        }
+
+        // Keep Navbar Fixed (Sticky Alternative)
+        window.addEventListener('scroll', function () {
+            const navbar = document.getElementById('navbar');
+            const scrollY = window.scrollY;
+            navbar.style.top = `${scrollY + 10}px`;
+        });
+
+        // Center all elements
+        function centerElements(adjustX = 50) {
+            const mainContent = document.getElementById('main-content');
+            const navbar = document.getElementById('navbar');
+            const forums = document.getElementById('forums');
+
+            // Calculate the left position based on the adjustX percentage
+            const leftPosition = `calc(${adjustX}% - ${mainContent.offsetWidth / 2}px)`;
+
+            // Apply the left position to all elements
+            navbar.style.left = leftPosition;
+            mainContent.style.left = leftPosition;
+            forums.style.left = leftPosition;
+
+            // Ensure the forums section starts below the main content
+            forums.style.marginTop = '100px';
+        }
+
+        function scrollToForums() {
+            document.getElementById('forums').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('forums').classList.add('visible');
+        }
+
+        window.onload = () => {
+            centerElements(15); // Default center to 50
+            loadPosts(); // Load posts when the page loads
+        };
+        window.onresize = () => centerElements(150);
+
+    </script>
+</body>
+
+</html>
