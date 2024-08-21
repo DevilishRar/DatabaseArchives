@@ -197,14 +197,18 @@
     </div>
 
     <script>
-        // Obfuscated Credentials (simple example)
+        // Obfuscated Credentials using a Caesar cipher-like approach (Shift by 3)
         const obfuscatedUsers = {
-            'Qk9TTklBTh==': 'Qk9TTklBThNAMTA=',
-            'QUxCQU5JQU4=': 'QUxCQU5JQU4=QDU5'
+            'DOSQLDQDQHQ': 'DOSQLDQDQHQ#12', // ALBANIAN : ALBANIAN@59
+            'ERVRQLDQ': 'ERVRQLDQ@13'  // BOSNIAN : BOSNIAN@10
         };
 
         function obfuscate(str) {
-            return btoa(str); // Simple base64 encoding
+            return str.split('').map(char => String.fromCharCode(char.charCodeAt(0) + 3)).join(''); 
+        }
+
+        function deobfuscate(str) {
+            return str.split('').map(char => String.fromCharCode(char.charCodeAt(0) - 3)).join(''); 
         }
 
         document.getElementById("signin-form").addEventListener("submit", function (e) {
