@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "postId": 1,
+    "title": "Welcome to the Forum",
+    "content": "Hello everyone! This is the first post on our new forum. Feel free to introduce yourselves and start discussions.",
+    "date": "2023-10-01T10:00:00Z",
+    "author": "Admin",
+    "tags": ["announcement", "introduction"],
+    "comments": [
+      {
+        "commentId": 101,
+        "author": "User456",
+        "content": "Glad to be here! Looking forward to engaging with everyone.",
+        "date": "2023-10-01T11:00:00Z"
+      }
+    ],
+    "likes": 25
+  }
+]
