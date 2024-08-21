@@ -12,13 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gitrows.options(options);
 
+    // Base64 encoded usernames and passwords
     const obfuscatedUsers = {
-        'Qk9TTklBTh==': 'Qk9TTklBThNAMTA=',
-        'QUxCQU5JQU4=': 'QUxCQU5JQU4=QDU5'
+        'Qk9TTklBTh==': 'Qk9TTklBThNAMTA=',  // BOSNIAN : BOSNIAN@10
+        'QUxCQU5JQU4=': 'QUxCQU5JQU4=QDU5'   // ALBANIAN : ALBANIAN@59
     };
 
     function obfuscate(str) {
-        return btoa(str); // Simple base64 encoding
+        return btoa(str); // Encode to Base64
+    }
+
+    function deobfuscate(str) {
+        return atob(str); // Decode from Base64
     }
 
     document.getElementById("signin-form").addEventListener("submit", async function (e) {
@@ -29,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const obfuscatedUsername = obfuscate(username);
         const obfuscatedPassword = obfuscate(password);
 
-        if (obfuscatedUsers[obfuscatedUsername] === obfuscatedPassword) {
+        // Check if the obfuscated username and password match the stored credentials
+        if (obfuscatedUsers[obfuscatedUsername] && obfuscatedUsers[obfuscatedUsername] === obfuscatedPassword) {
             try {
                 const sessionPath = '@github/DevilishRar/DatabaseArchives:main/data/sessions.json';
                 let sessions = await gitrows.get(sessionPath);
